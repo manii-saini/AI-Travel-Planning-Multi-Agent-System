@@ -1,6 +1,8 @@
+```txt
 streamlit
 reportlab
 python-dotenv
 langgraph
 langchain
 langchain-core
+```
