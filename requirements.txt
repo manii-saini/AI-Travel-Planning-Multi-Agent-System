@@ -1,6 +1,6 @@
 streamlit
 reportlab
-langchain-core
-langchain
-langgraph
 python-dotenv
+langgraph
+langchain
+langchain-core
