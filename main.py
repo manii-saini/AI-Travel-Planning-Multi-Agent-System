@@ -12,9 +12,8 @@ import os
 from typing import TypedDict, Annotated
 import operator
 
-import psycopg
 from langgraph.graph import StateGraph, START, END
-from langgraph.checkpoint.postgres import PostgresSaver
+from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import (
     AnyMessage,
     HumanMessage,
@@ -30,7 +29,6 @@ from tools.train_tool import search_trains
 from dotenv import load_dotenv
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL") or "postgresql://postgres:manish2006@localhost:5432/langgraph_memeory_demo"
 
 # LLM
 api_key = os.getenv("GROQ_API_KEY")
@@ -170,9 +168,8 @@ graph.add_edge("final_agent", END)
 # Persistent connection so both CLI and Streamlit can share the compiled app.
 # Must be autocommit=True because LangGraph migrations run CREATE INDEX CONCURRENTLY,
 # which is not allowed inside an active transaction block.
-_conn = psycopg.connect(DATABASE_URL, autocommit=True)
-checkpointer = PostgresSaver(_conn)
-checkpointer.setup()
+# In-memory checkpointer: no PostgreSQL required
+checkpointer = MemorySaver()
 
 app = graph.compile(checkpointer=checkpointer)
 
