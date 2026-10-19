@@ -10,3 +10,4 @@ langchain-community
 langchain-groq
 langchain-tavily
 psycopg[binary]
+langgraph-checkpoint-postgres
