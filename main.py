@@ -31,9 +31,13 @@ load_dotenv()
 
 
 # LLM
-api_key = os.getenv("GROQ_API_KEY")
-if not api_key or not api_key.startswith("gsk_"):
-    raise ValueError("Invalid GROQ_API_KEY. Copy the raw key from the Groq dashboard without the 'GROQ_' prefix.")
+api_key = os.getenv("GROQ_API_KEY", "").strip().strip('"').strip("'")
+if api_key.upper().startswith("GROQ_"):
+    api_key = api_key.split("_", 1)[1].strip()
+if not api_key:
+    raise ValueError("Missing GROQ_API_KEY. Set it in your environment or .env file.")
+if not api_key.startswith("gsk_"):
+    raise ValueError("Invalid GROQ_API_KEY. Expected a Groq API key starting with 'gsk_'.")
 
 model_name = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 llm = ChatGroq(
