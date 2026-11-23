@@ -32,10 +32,19 @@ load_dotenv()
 
 # LLM
 api_key = os.getenv("GROQ_API_KEY", "").strip().strip('"').strip("'")
+if not api_key:
+    try:
+        import streamlit as st
+
+        api_key = str(st.secrets.get("GROQ_API_KEY", "")).strip().strip('"').strip("'")
+    except Exception:
+        pass
 if api_key.upper().startswith("GROQ_"):
     api_key = api_key.split("_", 1)[1].strip()
 if not api_key:
-    raise ValueError("Missing GROQ_API_KEY. Set it in your environment or .env file.")
+    raise ValueError(
+        "Missing GROQ_API_KEY. Set it in .env locally, or add it in Streamlit Cloud: App settings > Secrets as GROQ_API_KEY=\"gsk_...\"."
+    )
 if not api_key.startswith("gsk_"):
     raise ValueError("Invalid GROQ_API_KEY. Expected a Groq API key starting with 'gsk_'.")
 
